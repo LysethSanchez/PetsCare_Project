@@ -1,0 +1,111 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f2f2f2;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+  
+  .contenedor {
+    background-color: white; /* Azul */
+    color: gray;
+    padding: 2rem;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  }
+  
+  .formulario {
+    display: none;
+  }
+  
+  .formulario.activo {
+    display: block;
+  }
+  
+  .input-con-icono {
+    display: flex;
+    align-items: center;
+    background-color: white;
+    border-radius: 5px;
+    padding: 5px;
+    margin-bottom: 15px;
+  }
+  
+  .input-con-icono img {
+    width: 24px;
+    margin-right: 10px;
+  }
+  
+  .input-con-icono input {
+    border: none;
+    outline: none;
+    padding: 10px;
+    flex-grow: 1;
+    font-size: 1rem;
+  }
+
+  #loginEmail, #loginPassword,
+  #registerEmail, #registerPassword {
+    border: 2px solid gray;
+    border-radius: 4px;
+}
+  
+  label {
+    display: block;
+    margin-bottom: 5px;
+    margin-top: 10px;
+  }
+  
+  .olvido {
+    display: block;
+    margin-bottom: 15px;
+    color: gray;
+    text-decoration: underline;
+  }
+  
+  .btn {
+    background-color: #08548f;
+    color: white;
+    border: none;
+    padding: 10px;
+    width: 100%;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-bottom: 10px;
+  }
+  
+  .btn.google {
+    background-color: white;
+    border: 2px solid gray;
+    border-radius: 4px;
+    color: gray;
+  }
+  
+  .checkbox {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+  }
+  
+  .checkbox input {
+    margin-right: 10px;
+  }
+  
+  p {
+    text-align: center;
+  }
+  
+  p button {
+    background: none;
+    border: none;
+    color: gray;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+  

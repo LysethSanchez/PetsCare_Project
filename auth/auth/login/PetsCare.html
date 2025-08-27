@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login y Registro</title>
+  <link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+  <div class="contenedor">
+    <!-- FORMULARIO DE INICIO DE SESIÓN -->
+    <div id="loginForm" class="formulario activo">
+      <h2>Ingresar</h2>
+      <p>Ingrese diligenciando su correo electrónico y la contraseña</p>
+
+      <label for="loginEmail">Dirección de email</label>
+      <div class="input-con-icono">
+        <img src="img/correo.png" alt="Correo">
+        <input type="email" id="loginEmail" placeholder="Ej: ejemplo@correo.com">
+      </div>
+
+      <label for="loginPassword">Contraseña</label>
+      <div class="input-con-icono">
+        <img src="img/candado.png" alt="Candado">
+        <input type="password" id="loginPassword" placeholder="Contraseña">
+      </div>
+
+      <a href="#" class="olvido">¿Olvidaste tu contraseña?</a>
+
+<button class="btn" onclick="iniciarSesion()">Iniciar sesión</button>
+
+      <button class="btn google">Iniciar con Google</button>
+
+      <p>¿No tienes una cuenta? <button onclick="mostrarRegistro()">Ingresa aquí</button></p>
+    </div>
+
+    <!-- FORMULARIO DE REGISTRO -->
+    <div id="registerForm" class="formulario">
+      <h2>Crear su cuenta</h2>
+      <p>Ingrese diligenciando su correo electrónico y la contraseña</p>
+
+      <label for="registerEmail">Dirección de email</label>
+      <div class="input-con-icono">
+        <img src="img/correo.png" alt="Correo">
+        <input type="email" id="registerEmail" placeholder="Ej: ejemplo@correo.com">
+      </div>
+
+      <label for="registerPassword">Contraseña</label>
+      <div class="input-con-icono">
+        <img src="img/correo.png" alt="Candado">
+        <input type="password" id="registerPassword" placeholder="Contraseña">
+      </div>
+
+      <div class="checkbox">
+        <input type="checkbox" id="news">
+        <label for="news">Recibir noticias, actualizaciones y ofertas</label>
+      </div>
+
+<button class="btn" onclick="crearCuenta()">Crear cuenta</button>
+
+      <p>¿Ya tiene una cuenta? <button onclick="mostrarLogin()">Ingresa aquí</button></p>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
