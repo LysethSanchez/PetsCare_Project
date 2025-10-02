@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: petscare-auth
+
+  # Perfil activo por defecto (local)
+  profiles:
+    active: dev

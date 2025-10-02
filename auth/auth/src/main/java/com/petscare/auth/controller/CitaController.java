@@ -1,9 +1,10 @@
 package com.petscare.auth.controller;
 
+import java.net.URI;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,20 +14,22 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.petscare.auth.config.ResourceNotFoundException;
 import com.petscare.auth.model.Cita;
 import com.petscare.auth.service.CitaService;
 
 /**
  * Controlador REST para gestionar citas.
  * Endpoints:
- *  GET    /api/citas                 -> Listar todas las citas
- *  POST   /api/citas                 -> Crear una cita
- *  GET    /api/citas/{id}            -> Obtener cita por ID
- *  PUT    /api/citas/{id}            -> Actualizar cita
- *  DELETE /api/citas/{id}            -> Eliminar cita
- *  GET    /api/citas/mascota/{id}    -> Listar citas de una mascota
- *  GET    /api/citas/especialista/{nombre} -> Listar citas por especialista
+ *  GET    /api/citas                          -> Listar todas las citas
+ *  POST   /api/citas                          -> Crear una cita (201 + Location)
+ *  GET    /api/citas/{id}                     -> Obtener cita por ID (404 si no existe)
+ *  PUT    /api/citas/{id}                     -> Actualizar cita (404 si no existe)
+ *  DELETE /api/citas/{id}                     -> Eliminar cita (204)
+ *  GET    /api/citas/mascota/{idMascota}      -> Listar citas de una mascota
+ *  GET    /api/citas/especialista/{nombre}    -> Listar citas por especialista
  */
 @RestController
 @RequestMapping("/api/citas")
@@ -36,47 +39,66 @@ public class CitaController {
     @Autowired
     private CitaService citaService;
 
-    // Crear una nueva cita
+    /** Crear una nueva cita -> 201 Created + Location */
     @PostMapping
-    public Cita crear(@RequestBody Cita cita) {
-        return citaService.crearCita(cita);
+    public ResponseEntity<Cita> crear(@RequestBody Cita cita) {
+        Cita creada = citaService.crearCita(cita);
+
+        // Construye Location absoluto: http://host:puerto/api/citas/{id}
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(creada.getId())
+                .toUri();
+
+        return ResponseEntity.created(location).body(creada);
     }
 
-    // Listar todas las citas
+    /** Listar todas -> 200 OK */
     @GetMapping
-    public List<Cita> listar() {
-        return citaService.listarCitas();
+    public ResponseEntity<List<Cita>> listar() {
+        return ResponseEntity.ok(citaService.listarCitas());
     }
 
-    // Buscar una cita por ID
+    /** Obtener por ID -> 200 OK | 404 Not Found */
     @GetMapping("/{id}")
-    public Optional<Cita> obtener(@PathVariable Long id) {
-        return citaService.buscarPorId(id);
+    public ResponseEntity<Cita> obtener(@PathVariable Long id) {
+        Cita c = citaService.buscarPorId(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Cita " + id + " no encontrada"));
+        return ResponseEntity.ok(c);
     }
 
-    // Actualizar una cita
+    /** Actualizar -> 200 OK | 404 Not Found */
     @PutMapping("/{id}")
-    public Cita actualizar(@PathVariable Long id, @RequestBody Cita cita) {
-        cita.setId(id); // Asegura que se actualiza la cita correcta
-        return citaService.actualizarCita(cita);
+    public ResponseEntity<Cita> actualizar(@PathVariable Long id, @RequestBody Cita cita) {
+        // Verifica existencia antes de actualizar
+        citaService.buscarPorId(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Cita " + id + " no encontrada"));
+
+        cita.setId(id);
+        Cita actualizada = citaService.actualizarCita(cita);
+        return ResponseEntity.ok(actualizada);
     }
 
-    // Eliminar una cita
+    /** Eliminar -> 204 No Content | 404 Not Found */
     @DeleteMapping("/{id}")
-    public void eliminar(@PathVariable Long id) {
+    public ResponseEntity<Void> eliminar(@PathVariable Long id) {
+        citaService.buscarPorId(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Cita " + id + " no encontrada"));
+
         citaService.eliminarCita(id);
+        return ResponseEntity.noContent().build();
     }
 
-    // Buscar citas por idMascota
+    /** Buscar por idMascota -> 200 OK */
     @GetMapping("/mascota/{idMascota}")
-    public List<Cita> buscarPorMascota(@PathVariable Long idMascota) {
-        return citaService.buscarPorMascota(idMascota);
+    public ResponseEntity<List<Cita>> buscarPorMascota(@PathVariable Long idMascota) {
+        return ResponseEntity.ok(citaService.buscarPorMascota(idMascota));
     }
 
-    // Buscar citas por especialista
+    /** Buscar por especialista -> 200 OK */
     @GetMapping("/especialista/{nombre}")
-    public List<Cita> buscarPorEspecialista(@PathVariable String nombre) {
-        return citaService.buscarPorEspecialista(nombre);
+    public ResponseEntity<List<Cita>> buscarPorEspecialista(@PathVariable String nombre) {
+        return ResponseEntity.ok(citaService.buscarPorEspecialista(nombre));
     }
-
 }

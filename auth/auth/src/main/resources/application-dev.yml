@@ -1,0 +1,20 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/petscare_auth?useSSL=false&serverTimezone=UTC
+    username: root
+    password: 1se2bas3tian4#
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+    show-sql: true
+
+# CORS por defecto (si lo lees desde propiedades)
+app:
+  cors:
+    allowed-origins: "http://localhost:5173,http://localhost:4200"
