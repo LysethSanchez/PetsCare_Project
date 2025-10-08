@@ -1,1 +1,0 @@
-create Schema petscare_auth;
