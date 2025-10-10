@@ -16,4 +16,4 @@ spring:
 
 app:
   cors:
-    allowed-origins: ${ALLOWED_ORIGINS:https://tu-frontend.com}
+    allowed-origins: ${ALLOWED_ORIGINS:https://PetsCare_Project_DepliegueTest.onrender.com}
