@@ -6,6 +6,7 @@ spring:
     url: ${DB_URL}
     username: ${DB_USER}
     password: ${DB_PASS}
+    driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
       ddl-auto: update
@@ -14,6 +15,10 @@ spring:
         dialect: org.hibernate.dialect.MySQLDialect
     show-sql: false
 
+spring:
+  profiles:
+    active: prod
+
 app:
   cors:
-    allowed-origins: ${ALLOWED_ORIGINS:https://PetsCare_Project_DepliegueTest.onrender.com}
+    allowed-origins: ${ALLOWED_ORIGINS:https://PetsCare_Project_Test.onrender.com}

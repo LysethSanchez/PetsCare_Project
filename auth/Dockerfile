@@ -1,26 +1,33 @@
-# --------- Fase de build -----------
-FROM eclipse-temurin:17-jdk AS build
-WORKDIR /app
+# syntax=docker/dockerfile:1
 
-# Copia todo el proyecto (si tu proyecto está en subcarpeta 'auth', el Dockerfile debe vivir en 'auth')
-COPY . .
+########## STAGE 1: BUILD (con Maven + JDK 17) ##########
+FROM maven:3.9.8-eclipse-temurin-17 AS build
+WORKDIR /workspace
 
-# Asegura permisos del wrapper (necesario en Linux)
+# Copiamos wrapper y POM para cachear dependencias
+COPY .mvn/ .mvn
+COPY mvnw pom.xml ./
 RUN chmod +x mvnw
+RUN ./mvnw -q -DskipTests dependency:go-offline
 
-# Compila (sin tests) y genera el JAR
-RUN ./mvnw -DskipTests clean package
+# Copiamos el código y construimos
+COPY src ./src
+RUN ./mvnw -q -DskipTests clean package
 
-# --------- Fase de runtime -----------
-FROM eclipse-temurin:17-jre
+########## STAGE 2: RUNTIME (JRE 17, imagen liviana) ##########
+FROM eclipse-temurin:17-jre-jammy
 WORKDIR /app
 
-# Copiamos el JAR construido
-COPY --from=build /app/target/*.jar app.jar
+# Opciones de memoria y puerto (Render setea PORT)
+ENV JAVA_OPTS="-XX:+UseContainerSupport -XX:MaxRAMPercentage=75 -Dserver.port=${PORT:-8080}"
+# Perfil por defecto en producción
+ENV SPRING_PROFILES_ACTIVE=prod
 
-# Render inyecta el puerto en $PORT
-ENV PORT=8080
+# Copiamos el jar
+COPY --from=build /workspace/target/*.jar app.jar
+
+# Para desarrollo local; Render ignora EXPOSE y usa PORT
 EXPOSE 8080
 
 # Arranque
-CMD ["java", "-Dserver.port=${PORT}", "-jar", "/app/app.jar"]
+ENTRYPOINT ["sh","-c","java $JAVA_OPTS -jar app.jar"]
