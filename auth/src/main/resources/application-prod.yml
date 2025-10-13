@@ -3,15 +3,24 @@ server:
 
 spring:
   datasource:
-    # DB_URL debe ser una JDBC válida (ej: jdbc:mysql://HOST:PORT/DB?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC)
     url: ${DB_URL}
     username: ${DB_USER}
     password: ${DB_PASS}
     driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 5
+      minimum-idle: 2
+      connection-timeout: 20000
+      idle-timeout: 300000
+      max-lifetime: 1200000
   jpa:
     hibernate:
       ddl-auto: update
-    show-sql: false
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
+    show-sql: false
+
+app:
+  cors:
+    allowed-origins: ${ALLOWED_ORIGINS:https://PetsCare_Project_Test.onrender.com}
